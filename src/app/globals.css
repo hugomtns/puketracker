@@ -1,1 +1,13 @@
 @import "tailwindcss";
+
+select,
+input,
+textarea,
+button {
+  font-family: inherit;
+  font-size: 1rem;
+}
+
+select option {
+  font-family: inherit;
+}
