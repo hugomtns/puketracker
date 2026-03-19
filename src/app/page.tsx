@@ -81,6 +81,8 @@ export default function Home() {
     loadEntry(date);
   }, [date, loadEntry]);
 
+  const isEditing = !!entry.id;
+
   const save = async () => {
     setSaving(true);
     await fetch("/api/entries", {
@@ -91,6 +93,13 @@ export default function Home() {
     setSaving(false);
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
+    loadEntry(date);
+  };
+
+  const deleteEntry = async () => {
+    if (!entry.id || !confirm("Delete this entry?")) return;
+    await fetch(`/api/entries/${entry.id}`, { method: "DELETE" });
+    setEntry(emptyEntry);
   };
 
   const foodLabel = (f: Food) =>
@@ -142,6 +151,12 @@ export default function Home() {
         <div className="text-center text-gray-500 py-8">Loading...</div>
       ) : (
         <>
+          {isEditing && (
+            <div className="text-center text-sm text-indigo-600 font-medium">
+              Editing existing entry
+            </div>
+          )}
+
           {/* Meals */}
           <div className="bg-white rounded-xl p-4 shadow-sm space-y-4">
             <h2 className="font-semibold text-lg">Meals</h2>
@@ -286,20 +301,30 @@ export default function Home() {
             />
           </div>
 
-          {/* Save */}
-          <button
-            onClick={save}
-            disabled={saving}
-            className={`w-full py-3 rounded-xl font-semibold text-white transition-colors ${
-              saved
-                ? "bg-green-500"
-                : saving
-                ? "bg-gray-400"
-                : "bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800"
-            }`}
-          >
-            {saved ? "Saved!" : saving ? "Saving..." : "Save Entry"}
-          </button>
+          {/* Save & Delete */}
+          <div className="space-y-2">
+            <button
+              onClick={save}
+              disabled={saving}
+              className={`w-full py-3 rounded-xl font-semibold text-white transition-colors ${
+                saved
+                  ? "bg-green-500"
+                  : saving
+                  ? "bg-gray-400"
+                  : "bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800"
+              }`}
+            >
+              {saved ? "Saved!" : saving ? "Saving..." : isEditing ? "Update Entry" : "Save Entry"}
+            </button>
+            {isEditing && (
+              <button
+                onClick={deleteEntry}
+                className="w-full py-3 rounded-xl font-semibold text-red-600 border border-red-200 hover:bg-red-50 transition-colors"
+              >
+                Delete Entry
+              </button>
+            )}
+          </div>
         </>
       )}
     </div>
