@@ -13,5 +13,6 @@ export const PUKE_TYPES = [
   { value: "transparent_liquid", label: "Transparent Liquid" },
   { value: "yellow_bile", label: "Yellow Bile" },
   { value: "hairball", label: "Hairball" },
+  { value: "brown_liquid", label: "Brown Liquid" },
   { value: "other", label: "Other" },
 ] as const;

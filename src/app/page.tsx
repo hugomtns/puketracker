@@ -188,9 +188,9 @@ export default function Home() {
               </select>
             </div>
 
-            {snackFoods.length > 0 && (
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Extras / Snacks</label>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Snacks / Extras</label>
+              {snackFoods.length > 0 ? (
                 <div className="flex flex-wrap gap-2">
                   {snackFoods.map((f) => (
                     <button
@@ -206,8 +206,10 @@ export default function Home() {
                     </button>
                   ))}
                 </div>
-              </div>
-            )}
+              ) : (
+                <p className="text-sm text-gray-400">No snacks configured. Add some in the Foods page.</p>
+              )}
+            </div>
           </div>
 
           {/* Puke Section */}
