@@ -1,0 +1,61 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Food {
+  id        String   @id @default(cuid())
+  type      String   // "wet", "kibble", "snack"
+  brand     String
+  details   String   @default("")
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  breakfastEntries DailyEntry[] @relation("Breakfast")
+  dinnerEntries    DailyEntry[] @relation("Dinner")
+  kibbleEntries    DailyEntry[] @relation("Kibble")
+  extraEntries     EntryExtra[]
+}
+
+model DailyEntry {
+  id        String   @id @default(cuid())
+  date      DateTime @unique @db.Date
+
+  breakfastId String?
+  breakfast   Food?   @relation("Breakfast", fields: [breakfastId], references: [id])
+
+  dinnerId    String?
+  dinner      Food?   @relation("Dinner", fields: [dinnerId], references: [id])
+
+  kibbleId    String?
+  kibble      Food?   @relation("Kibble", fields: [kibbleId], references: [id])
+
+  puked       Boolean @default(false)
+  pukeCount   Int     @default(0)
+
+  extras      EntryExtra[]
+  pukeTypes   PukeType[]
+
+  notes       String  @default("")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model EntryExtra {
+  id      String @id @default(cuid())
+  entryId String
+  entry   DailyEntry @relation(fields: [entryId], references: [id], onDelete: Cascade)
+  foodId  String
+  food    Food   @relation(fields: [foodId], references: [id])
+}
+
+model PukeType {
+  id      String @id @default(cuid())
+  entryId String
+  entry   DailyEntry @relation(fields: [entryId], references: [id], onDelete: Cascade)
+  type    String
+}
